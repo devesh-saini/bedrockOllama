@@ -1,4 +1,2 @@
 boto3
-langchain
-langchain_ollama
 awscli

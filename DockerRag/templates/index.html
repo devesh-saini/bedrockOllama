@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Docker — Knowledge Base</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #faf7f4;
+      --surface: #ffffff;
+      --text-primary: #1a1a1a;
+      --text-secondary: #888;
+      --text-muted: #bbb;
+      --accent-teal: #9dd5cd;
+      --accent-orange: #f7b37a;
+      --accent-purple: #b8a9e0;
+      --accent-bluish: #85b9c8;
+      --dot-discover: #f5a623;
+      --dot-more: #9b8fd4;
+      --border: #ece8e2;
+      --shadow: 0 2px 12px rgba(0,0,0,0.06);
+      --radius: 14px;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      background-color: var(--bg);
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text-primary);
+      min-height: 80vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── NAV ── */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 48px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.25rem;
+      color: var(--text-primary);
+      text-decoration: none;
+      letter-spacing: -0.01em;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 48px 40px;
+      text-align: center;
+    }
+
+    .hero-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(4rem, 10vw, 7.5rem);
+      font-weight: 400;
+      letter-spacing: -0.03em;
+      color: #9fb7d9; /* Fallback if gradient text is unsupported */
+      background: linear-gradient(90deg, #8fb8d3 0%, #b79bdc 45%, #f0b186 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1;
+      margin-bottom: 48px;
+      animation: fadeUp 0.7s ease both;
+    }
+
+    /* ── SEARCH ── */
+    .search-wrapper {
+      width: 100%;
+      max-width: 680px;
+      animation: fadeUp 0.7s ease 0.1s both;
+    }
+
+    .search-form {
+      display: flex;
+      align-items: center;
+      background: var(--surface);
+      border-radius: 50px;
+      padding: 10px 10px 10px 28px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      transition: box-shadow 0.2s;
+    }
+
+    .search-form:focus-within {
+      box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+    }
+
+    .search-input {
+      flex: 1;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1rem;
+      color: var(--text-primary);
+      font-weight: 300;
+    }
+
+    .search-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .search-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--text-primary);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: transform 0.15s, background 0.2s;
+    }
+
+    .search-btn:hover {
+      transform: scale(1.05);
+      background: #333;
+    }
+
+    .search-btn svg {
+      width: 18px;
+      height: 18px;
+      fill: none;
+      stroke: white;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* ── CARDS SECTION ── */
+    .cards-section {
+      padding: 10px 10px 160px;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+      animation: fadeUp 0.7s ease 0.2s both;
+    }
+
+    .cards-row {
+      margin-bottom: 40px;
+    }
+
+    @media (min-width: 848px) {
+      .cards-section {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 24px;
+        align-items: start;
+      }
+
+      .cards-row {
+        margin-bottom: 0;
+      }
+    }
+
+    .section-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+    }
+
+    .section-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .dot-discover { background: var(--dot-discover); }
+    .dot-more     { background: var(--dot-more); }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 16px;
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 24px 22px 20px;
+      border: 1px solid var(--border);
+      border-left: 4px solid transparent;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      transition: transform 0.2s, box-shadow 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 28px rgba(0,0,0,0.09);
+    }
+
+    .card.teal   { border-left-color: var(--accent-teal); }
+    .card.orange { border-left-color: var(--accent-orange); }
+    .card.purple { border-left-color: var(--accent-purple); }
+    .card.bluish { border-left-color: var(--accent-bluish); }
+
+    .card-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.05rem;
+      font-weight: 400;
+      color: var(--text-primary);
+      margin-bottom: 10px;
+      line-height: 1.3;
+    }
+
+    .card-excerpt {
+      font-size: 0.84rem;
+      color: var(--text-secondary);
+      line-height: 1.55;
+      font-weight: 300;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      margin-bottom: 18px;
+    }
+
+    .card-meta {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    .card-meta .sep {
+      color: var(--border);
+    }
+
+    /* ── EMPTY STATE ── */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      nav { padding: 16px 24px; }
+      .hero { padding: 60px 24px 30px; }
+      .cards-section { padding: 32px 24px 48px; }
+      .cards-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HERO -->
+  <div class="hero">
+    <h1 class="hero-title">Docker</h1>
+
+    <div class="search-wrapper">
+      <form class="search-form" method="GET">
+        <input
+          class="search-input"
+          type="text"
+          name="q"
+          placeholder="Search the knowledge base…"
+          value="{{ query|default:'' }}"
+          autocomplete="off"
+        />
+        <button class="search-btn" type="submit" aria-label="Search">
+          <svg viewBox="0 0 24 24">
+            <circle cx="11" cy="11" r="7"/>
+            <line x1="16.5" y1="16.5" x2="22" y2="22"/>
+          </svg>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- CARDS -->
+  <section class="cards-section">
+
+    <!-- DISCOVER -->
+    <div class="cards-row discover">
+      <div class="section-label">
+        <span class="section-dot dot-discover"></span>
+        Discover
+      </div>
+        <!-- Placeholder cards for development -->
+        <div class="cards-grid">
+          <a href="#" class="card orange">
+            <div class="card-title">Networking Commands</div>
+            <div class="card-excerpt">Basic Docker networking commands to list, inspect, and ...</div>
+            <div class="card-meta">
+              <span>94% accuracy</span><span class="sep">·</span><span>7 chunks</span>
+            </div>
+          </a>
+          <a href="#" class="card teal">
+            <div class="card-title">Volume Management</div>
+            <div class="card-excerpt">Creating and mounting volumes to persist data across ...</div>
+            <div class="card-meta">
+              <span>88% accuracy</span><span class="sep">·</span><span>5 chunks</span>
+            </div>
+          </a>
+        </div>
+    </div>
+
+    <!-- MORE -->
+    <div class="cards-row more">
+      <div class="section-label">
+        <span class="section-dot dot-more"></span>
+        More
+      </div>
+
+      <div class="cards-grid">
+        <a href="#" class="card purple">
+          <div class="card-title">About</div>
+          <div class="card-excerpt">Learn what this project is, how it was built, and what ...</div>
+          <div class="card-meta">
+            <span>310 words</span><span class="sep">·</span><span>6 backlinks</span>
+          </div>
+        </a>
+        <a href="#" class="card bluish">
+          <div class="card-title">Tech Stack</div>
+          <div class="card-excerpt">The tools powering this app — Django, Ollama, AWS ...</div>
+          <div class="card-meta">
+            <span>616 words</span><span class="sep">·</span><span>6 backlinks</span>
+          </div>
+        </a>
+      </div>
+    </div>
+
+  </section>
+
+</body>
+</html>

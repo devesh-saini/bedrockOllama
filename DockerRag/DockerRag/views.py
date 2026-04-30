@@ -5,7 +5,7 @@ def home(request):
     return render(request, 'index.html')
 
 def about(request):
-    return HttpResponse("I'm from the hood wanna be a gangsta.")
+    return render(request, 'about.html')
 
-def contact(request):
-    return HttpResponse("If it's not bussiness homie, we ain't talkin' shit.")
+def tech_stack(request):
+    return render(request, 'tech_stack.html')

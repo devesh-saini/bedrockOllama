@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tech Stack — Docker Knowledge Base</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #faf7f4;
+      --surface: #ffffff;
+      --text-primary: #1a1a1a;
+      --text-secondary: #888;
+      --text-muted: #bbb;
+      --accent-teal: #9dd5cd;
+      --accent-orange: #f7b37a;
+      --accent-purple: #b8a9e0;
+      --accent-lavender: #c9bfea;
+      --border: #ece8e2;
+      --shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+
+    body {
+      background-color: var(--bg);
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text-primary);
+      min-height: 100vh;
+    }
+
+    /* ── BACK LINK ── */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 32px 48px 0;
+      text-decoration: none;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      transition: color 0.2s;
+    }
+
+    .back-link:hover { color: var(--text-primary); }
+
+    .back-link svg {
+      width: 14px;
+      height: 14px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      text-align: center;
+      padding: 48px 48px 64px;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .hero-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+    }
+
+    .hero-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent-purple);
+    }
+
+    .hero-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(3rem, 8vw, 6rem);
+      font-weight: 400;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      background: linear-gradient(120deg, #9db8d9 0%, #b8a9e0 35%, #f7b37a 75%, #f5c09a 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ── CONTENT ── */
+    .content {
+      max-width: 660px;
+      margin: 0 auto;
+      padding: 0 48px 80px;
+      animation: fadeUp 0.6s ease 0.1s both;
+    }
+
+    .section {
+      margin-bottom: 52px;
+    }
+
+    .section-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+    }
+
+    .section-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .dot-teal     { background: var(--accent-teal); }
+    .dot-orange   { background: var(--accent-orange); }
+    .dot-purple   { background: var(--accent-purple); }
+    .dot-lavender { background: var(--accent-lavender); }
+
+    .section-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.55rem;
+      font-weight: 400;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+      letter-spacing: -0.01em;
+    }
+
+    .section p {
+      font-size: 0.95rem;
+      line-height: 1.85;
+      color: var(--text-secondary);
+      font-weight: 300;
+    }
+
+    .section p + p {
+      margin-top: 14px;
+    }
+
+    .section strong {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    /* ── TECH TAGS ── */
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 20px;
+    }
+
+    .tag {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      padding: 6px 14px;
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      font-weight: 400;
+      box-shadow: var(--shadow);
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin-bottom: 52px;
+    }
+
+    /* ── FOOTER NAV ── */
+    .footer-nav {
+      margin-top: 64px;
+      padding-top: 28px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-brand {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1rem;
+      color: var(--text-muted);
+      text-decoration: none;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 28px;
+    }
+
+    .footer-links a {
+      text-decoration: none;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--text-primary); }
+
+    .footer-links a.active {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    /* ── ANIMATION ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      .back-link { padding: 24px 24px 0; }
+      .hero { padding: 36px 24px 48px; }
+      .content { padding: 0 24px 60px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- BACK -->
+  <a href="/" class="back-link">
+    <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+    Home
+  </a>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-label">
+      <span class="hero-dot"></span>
+      What powers this
+    </div>
+    <h1 class="hero-title">Tech Stack</h1>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- DJANGO -->
+    <div class="section">
+      <div class="section-label">
+        <span class="section-dot dot-teal"></span>
+        Web layer
+      </div>
+      <h2 class="section-title">Django</h2>
+      <p>
+        The application is built with <strong>Django</strong>, a Python web framework that keeps the backend clean and Pythonic. It handles routing, templating, and serves as the glue between the frontend and the retrieval pipeline.
+      </p>
+      <p>
+        Django was chosen for its simplicity and because the rest of the stack — Boto3, Requests — is all Python. No context switching, no separate services for the web layer.
+      </p>
+      <div class="tags">
+        <span class="tag">Django 5</span>
+        <span class="tag">Python 3.12</span>
+        <span class="tag">Jinja2 Templates</span>
+        <span class="tag">Boto3</span>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- AWS BEDROCK -->
+    <div class="section">
+      <div class="section-label">
+        <span class="section-dot dot-orange"></span>
+        Knowledge base & retrieval
+      </div>
+      <h2 class="section-title">AWS Bedrock</h2>
+      <p>
+        <strong>AWS Bedrock Knowledge Bases</strong> handles the heavy lifting of the RAG pipeline — document ingestion, chunking, embedding, and vector storage. When a query comes in, Bedrock's retrieval API returns the most semantically relevant chunks ranked by similarity score.
+      </p>
+      <p>
+        The app uses the <strong>Retrieve-only</strong> mode, intentionally skipping Bedrock's built-in generation. This keeps generation local and free, while still benefiting from Bedrock's managed vector search infrastructure.
+      </p>
+      <div class="tags">
+        <span class="tag">Bedrock Knowledge Bases</span>
+        <span class="tag">Retrieve API</span>
+        <span class="tag">Vector Search</span>
+        <span class="tag">S3 (document store)</span>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- OLLAMA -->
+    <div class="section">
+      <div class="section-label">
+        <span class="section-dot dot-purple"></span>
+        Local inference
+      </div>
+      <h2 class="section-title">Ollama</h2>
+      <p>
+        <strong>Ollama</strong> runs a large language model locally on the same machine as the Django app. Retrieved chunks from Bedrock are assembled into a prompt and sent to Ollama's REST API, which returns a generated answer grounded in that context.
+      </p>
+      <p>
+        Running inference locally means <strong>zero generation cost</strong> regardless of query volume. The tradeoff is hardware — a decent GPU or Apple Silicon chip is recommended for acceptable response times.
+      </p>
+      <div class="tags">
+        <span class="tag">Ollama</span>
+        <span class="tag">Mistral</span>
+        <span class="tag">REST API</span>
+        <span class="tag">Local inference</span>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- FRONTEND -->
+    <div class="section">
+      <div class="section-label">
+        <span class="section-dot dot-lavender"></span>
+        Frontend
+      </div>
+      <h2 class="section-title">Vanilla HTML & CSS</h2>
+      <p>
+        No JavaScript framework. The UI is built with plain <strong>HTML, CSS, and Django templates</strong>. This keeps the frontend lightweight, fast to load, and easy to maintain without a separate build step or node_modules folder.
+      </p>
+      <p>
+        Typography is set in <strong>DM Serif Display</strong> and <strong>DM Sans</strong> from Google Fonts. The warm off-white palette and minimal layout are intentional — the focus stays on the content, not the chrome.
+      </p>
+      <div class="tags">
+        <span class="tag">HTML5</span>
+        <span class="tag">CSS3</span>
+        <span class="tag">Django Templates</span>
+        <span class="tag">DM Serif Display</span>
+        <span class="tag">DM Sans</span>
+      </div>
+    </div>
+
+    <!-- FOOTER NAV -->
+    <div class="footer-nav">
+      <a href="/" class="footer-brand">Docker</a>
+      <div class="footer-links">
+        <a href="/">Home</a>
+        <a href="/about">About</a>
+        <a href="/tech-stack" class="active">Tech Stack</a>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

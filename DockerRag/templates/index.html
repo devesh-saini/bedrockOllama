@@ -49,6 +49,11 @@
       min-height: 80vh;
       display: flex;
       flex-direction: column;
+      scroll-behavior: smooth;
+    }
+
+    body::-webkit-scrollbar {
+      display: none;
     }
 
     /* ── NAV ── */
@@ -352,29 +357,33 @@
     .hero-compact {
       padding: 32px 48px 16px;
       /* tighter top padding */
-      justify-content: flex-start;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
     }
 
     .hero-compact .hero-title {
       font-size: clamp(2.5rem, 5vw, 4rem);
       /* smaller title */
-      margin-bottom: 0;
-    }
-
-    .hero-compact .search-wrapper {
-      display: none;
-      /* hide from hero, shown at bottom instead */
+      padding-bottom: 24px;
     }
 
     /* ── CONVERSATION ── */
     .conversation {
-      max-width: 720px;
-      max-height: 700px;
+      width: 720px;
+      max-height: 60vh;
+      overflow-y: auto;
       margin: 0 auto;
       padding: 8px 48px 24px;
       display: flex;
       flex-direction: column;
       gap: 32px;
+      scroll-behavior: smooth;
+    }
+
+    .conversation::-webkit-scrollbar {
+      display: none;
     }
 
     /* ── MESSAGE BASE ── */
@@ -386,8 +395,8 @@
 
     /* ── USER MESSAGE ── */
     .msg-user {
-      justify-content: flex-end;
-      align-items: center;
+      text-align: right;
+      width: 100%;
       gap: 12px;
     }
 
@@ -425,6 +434,8 @@
     .msg-llm {
       justify-content: flex-start;
       align-items: flex-start;
+      text-align: left;
+      width: 90%;
     }
 
     .msg-body {
@@ -565,21 +576,72 @@
 
   <script>
     async function get_response(query) {
-      console.log(query);
+      // Create message elements
+      const conversation = document.querySelector('.conversation');
+
+      // Add user message
+      const user_msg = document.createElement('div');
+      user_msg.classList.add('msg', 'msg-user');
+      user_msg.innerHTML = `
+    <span class="msg-text">${query}</span>
+    <div class="msg-icon msg-icon-user">You</div>
+  `;
+      conversation.appendChild(user_msg);
+
+      // Add LLM message container
+      const llm_msg = document.createElement('div');
+      llm_msg.classList.add('msg', 'msg-llm');
+      llm_msg.innerHTML = `
+    <div class="msg-icon msg-icon-llm">AI</div>
+    <div class="msg-body">
+      <div class="msg-text"></div>
+    </div>
+  `;
+      conversation.appendChild(llm_msg);
+
+      const msg_text = llm_msg.querySelector('.msg-text');
+
+      // Stream the response
       const response = await fetch('/stream/?q=' + query);
-      const text = await response.text();
-      console.log(text);
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        const chunk = decoder.decode(value);
+
+        chunk.split("\n")
+          .filter(line => line.startsWith("data: "))
+          .forEach(line => {
+            try {
+              const data = JSON.parse(line.slice(6));
+
+              if (data.type === "token") {
+                msg_text.textContent += data.value;
+                llm_msg.scrollIntoView({ behavior: 'smooth', block: 'end' });
+              }
+
+              // Optional: use meta info
+              // if (data.type === "meta") {
+              //   console.log("Accuracy:", data.accuracy, "Chunks:", data.chunks);
+              // }
+
+            } catch (e) { }
+          });
+      }
     }
 
     document.addEventListener('DOMContentLoaded', () => {
       const search_form = document.querySelector('.search-form');
       search_form.addEventListener('submit', async (event) => {
         event.preventDefault();
-        console.log("submit");
         const query = document.querySelector('.search-input').value;
-        console.log(query);
+        if (!query.trim()) return;
 
-        get_response(query);
+        document.querySelector('.search-input').value = ''; // Clear input
+        await get_response(query);
       });
     });
   </script>

@@ -369,6 +369,7 @@
     /* ── CONVERSATION ── */
     .conversation {
       max-width: 720px;
+      max-height: 700px;
       margin: 0 auto;
       padding: 8px 48px 24px;
       display: flex;
@@ -561,6 +562,27 @@
       }
     }
   </style>
+
+  <script>
+    async function get_response(query) {
+      console.log(query);
+      const response = await fetch('/stream/?q=' + query);
+      const text = await response.text();
+      console.log(text);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const search_form = document.querySelector('.search-form');
+      search_form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        console.log("submit");
+        const query = document.querySelector('.search-input').value;
+        console.log(query);
+
+        get_response(query);
+      });
+    });
+  </script>
 </head>
 
 <body>
@@ -573,8 +595,7 @@
 
     <div class="search-wrapper">
       <form class="search-form" method="get">
-        <input class="search-input" type="text" name="q" placeholder="Search the knowledge base…"
-          autocomplete="off" />
+        <input class="search-input" type="text" name="q" placeholder="Search the knowledge base…" autocomplete="off" />
         <button class="search-btn" type="submit" aria-label="Search">
           <svg viewBox="0 0 24 24">
             <circle cx="11" cy="11" r="7" />

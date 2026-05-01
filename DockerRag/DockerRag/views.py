@@ -6,7 +6,7 @@ from .rag import retrieve_results, parse_results, generate_with_ollama, knowledg
 
 def home(request):
     return render(request, 'index.html', {
-        'query': request.GET.get('q', ''),
+        'query': request.POST.get('q', ''),
     })
 
 

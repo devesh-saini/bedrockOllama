@@ -1,7 +1,6 @@
 import json
 from django.http import StreamingHttpResponse
 from django.shortcuts import render
-from django.views.decorators.csrf import csrf_exempt
 from .rag import retrieve_results, parse_results, generate_with_ollama, knowledgeBaseId
 
 
@@ -11,9 +10,13 @@ def home(request):
     })
 
 
-@csrf_exempt
 def stream_response(request):
-    query = request.POST.get('query', '').strip()
+    query = request.GET.get('q', '').strip()  # changed POST to GET
+
+    if not query:
+        def empty_stream():
+            yield f"data: {json.dumps({'type': 'error', 'value': 'No query provided'})}\n\n"
+        return StreamingHttpResponse(empty_stream(), content_type='text/event-stream')
 
     def event_stream():
         try:

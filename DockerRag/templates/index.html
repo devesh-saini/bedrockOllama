@@ -561,143 +561,6 @@
       }
     }
   </style>
-
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      // Find both search forms (main hero and bottom)
-      const forms = document.querySelectorAll('.search-form');
-      const conversation = document.querySelector('.conversation');
-      const hero = document.querySelector('.hero');
-      const cardsSection = document.querySelector('.cards-section');
-
-      // Add a bottom search wrapper if it doesn't exist
-      let bottomWrapper = document.querySelector('.search-bottom-wrapper');
-      if (!bottomWrapper) {
-        bottomWrapper = document.createElement('div');
-        bottomWrapper.className = 'search-bottom-wrapper';
-        bottomWrapper.style.display = 'none';
-        bottomWrapper.innerHTML = `
-          <form class="search-form" method="post">
-            <input class="search-input" type="text" name="query" placeholder="Ask a follow-up..." autocomplete="off" />
-            <button class="search-btn" type="submit" aria-label="Search">
-              <svg viewBox="0 0 24 24">
-                <circle cx="11" cy="11" r="7" />
-                <line x1="16.5" y1="16.5" x2="22" y2="22" />
-              </svg>
-            </button>
-          </form>
-        `;
-        hero.appendChild(bottomWrapper);
-        
-        // Attach listener to the new form too
-        attachFormListener(bottomWrapper.querySelector('.search-form'));
-      }
-
-      function attachFormListener(form) {
-        form.addEventListener('submit', async (e) => {
-          e.preventDefault();
-          const input = form.querySelector('.search-input');
-          const query = input.value.trim();
-          if (!query) return;
-
-          // Clear inputs
-          document.querySelectorAll('.search-input').forEach(inp => inp.value = '');
-
-          // UI transitions
-          hero.classList.add('hero-compact');
-          if (cardsSection) cardsSection.style.display = 'none';
-          
-          // Show bottom search form, hide hero search form is handled by CSS mostly, but we can ensure bottom wrapper is visible
-          if (bottomWrapper) bottomWrapper.style.display = 'block';
-
-          // Add user message
-          const userMsg = document.createElement('div');
-          userMsg.className = 'msg msg-user';
-          userMsg.innerHTML = `
-            <div class="msg-text">${query}</div>
-            <div class="msg-icon msg-icon-user">U</div>
-          `;
-          conversation.appendChild(userMsg);
-
-          // Add LLM message placeholder
-          const llmMsg = document.createElement('div');
-          llmMsg.className = 'msg msg-llm';
-          llmMsg.innerHTML = `
-            <div class="msg-icon msg-icon-llm">D</div>
-            <div class="msg-body">
-              <div class="msg-text"></div>
-              <div class="msg-meta"></div>
-            </div>
-          `;
-          conversation.appendChild(llmMsg);
-
-          const llmText = llmMsg.querySelector('.msg-text');
-          const llmMeta = llmMsg.querySelector('.msg-meta');
-
-          try {
-            const response = await fetch('/stream/', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-              body: new URLSearchParams({ query: query })
-            });
-
-            if (!response.ok) {
-              throw new Error(\`HTTP error! status: \${response.status}\`);
-            }
-
-            const reader = response.body.getReader();
-            const decoder = new TextDecoder('utf-8');
-            let buffer = '';
-
-            while (true) {
-              const { done, value } = await reader.read();
-              if (done) break;
-              
-              buffer += decoder.decode(value, { stream: true });
-              const lines = buffer.split('\\n\\n');
-              buffer = lines.pop(); // keep incomplete chunk in buffer
-
-              for (const line of lines) {
-                if (line.startsWith('data: ')) {
-                  const dataStr = line.substring(6);
-                  try {
-                    const data = JSON.parse(dataStr);
-                    if (data.type === 'meta') {
-                      llmMeta.innerHTML = \`<span>\${data.accuracy}% accuracy</span><span class="sep">·</span><span>\${data.chunks} chunks</span>\`;
-                    } else if (data.type === 'token') {
-                      // We can append text directly, optionally handle line breaks
-                      llmText.appendChild(document.createTextNode(data.value));
-                    } else if (data.type === 'error') {
-                      const errSpan = document.createElement('span');
-                      errSpan.style.color = 'red';
-                      errSpan.textContent = \`\\nError: \${data.value}\`;
-                      llmText.appendChild(errSpan);
-                    } else if (data.type === 'done') {
-                      // done
-                    }
-                  } catch (err) {
-                    console.error('Error parsing JSON:', err, 'from line:', line);
-                  }
-                }
-              }
-            }
-          } catch (error) {
-            console.error('Fetch error:', error);
-            const errSpan = document.createElement('span');
-            errSpan.style.color = 'red';
-            errSpan.textContent = 'Failed to connect to the server.';
-            llmText.appendChild(errSpan);
-          }
-          
-          // Scroll to bottom
-          window.scrollTo(0, document.body.scrollHeight);
-        });
-      }
-
-      // Attach listener to existing forms
-      forms.forEach(attachFormListener);
-    });
-  </script>
 </head>
 
 <body>
@@ -709,8 +572,9 @@
     <div class="conversation"></div>
 
     <div class="search-wrapper">
-      <form class="search-form" method="post">
-        <input class="search-input" type="text" name="query" placeholder="Search the knowledge base…" autocomplete="off" />
+      <form class="search-form" method="get">
+        <input class="search-input" type="text" name="q" placeholder="Search the knowledge base…"
+          autocomplete="off" />
         <button class="search-btn" type="submit" aria-label="Search">
           <svg viewBox="0 0 24 24">
             <circle cx="11" cy="11" r="7" />

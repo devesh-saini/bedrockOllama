@@ -24,10 +24,9 @@ def parse_results(retrieval_results):
         })
     return contexts
 
-def generate_with_ollama(query: str, contexts: list, model: str = "llama3"):
-    # Build context string from retrieved chunks
+def generate_with_ollama(query: str, contexts: list, model: str = "mistral:latest"):
     context_text = "\n\n".join([f"[Source {i+1}]: {c['text']}" for i, c in enumerate(contexts)])
-    
+
     prompt = f"""Use the following context to answer the question.
 
     Context:
@@ -42,14 +41,22 @@ def generate_with_ollama(query: str, contexts: list, model: str = "llama3"):
         json={
             "model": model,
             "prompt": prompt,
-            "stream": False
-        }
+            "stream": True       # changed to True
+        },
+        stream=True              # stream the HTTP response too
     )
-    return response.json()["response"]
 
+    for line in response.iter_lines():
+        if line:
+            chunk = line.decode('utf-8')
+            import json
+            data = json.loads(chunk)
+            if not data.get("done"):
+                yield data.get("response", "")
+                
+                
 
-
-def rag_pipeline(query: str, knowledge_base_id: str, ollama_model: str = "llama3"):
+def rag_pipeline(query: str, knowledge_base_id: str = "D9GSQGHM9G", ollama_model: str = "mistral:latest"):
     print(f"🔍 Retrieving from Knowledge Base...")
     raw_results = retrieve_results(query, knowledge_base_id)
     
@@ -62,14 +69,20 @@ def rag_pipeline(query: str, knowledge_base_id: str, ollama_model: str = "llama3
     return {
         "query": query,
         "answer": answer,
+        "accuracy": round(contexts[0]["score"] * 100) if contexts else 0,  # top chunk score as accuracy
+        "chunk_count": len(contexts),
         "sources": [c["source"] for c in contexts]
     }
 
-# Usage
-result = rag_pipeline(
-    query="Give me commands to initiate a docker container.",
-    knowledge_base_id=knowledgeBaseId,
-    ollama_model="mistral:latest"
-)
+if __name__ == "__main__":
+    # Usage
+    
+    query = input(">>> ")
+    
+    result = rag_pipeline(
+        query=query,
+        knowledge_base_id=knowledgeBaseId,
+        ollama_model="mistral:latest"
+    )
 
-print(result["answer"])
+    print(result["answer"])

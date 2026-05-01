@@ -1,15 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Docker — Knowledge Base</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap"
+    rel="stylesheet">
 
   <style>
-    *, *::before, *::after {
+    *,
+    *::before,
+    *::after {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
@@ -28,11 +33,12 @@
       --dot-discover: #f5a623;
       --dot-more: #9b8fd4;
       --border: #ece8e2;
-      --shadow: 0 2px 12px rgba(0,0,0,0.06);
+      --shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
       --radius: 14px;
     }
 
-    html, body {
+    html,
+    body {
       height: 100%;
     }
 
@@ -78,7 +84,8 @@
       font-size: clamp(4rem, 10vw, 7.5rem);
       font-weight: 400;
       letter-spacing: -0.03em;
-      color: #9fb7d9; /* Fallback if gradient text is unsupported */
+      color: #9fb7d9;
+      /* Fallback if gradient text is unsupported */
       background: linear-gradient(90deg, #8fb8d3 0%, #b79bdc 45%, #f0b186 100%);
       -webkit-background-clip: text;
       background-clip: text;
@@ -107,7 +114,7 @@
     }
 
     .search-form:focus-within {
-      box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
     }
 
     .search-input {
@@ -199,8 +206,61 @@
       flex-shrink: 0;
     }
 
-    .dot-discover { background: var(--dot-discover); }
-    .dot-more     { background: var(--dot-more); }
+    .dot-discover {
+      background: var(--dot-discover);
+    }
+
+    .dot-more {
+      background: var(--dot-more);
+    }
+
+    /* ── RESULTS ── */
+    .results-section {
+      padding: 0 48px 40px;
+      max-width: 800px;
+      margin: 0 auto;
+      width: 100%;
+      animation: fadeUp 0.7s ease 0.15s both;
+    }
+
+    .result-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 32px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+
+    .answer-content {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      color: var(--text-primary);
+      margin-bottom: 24px;
+    }
+
+    .sources-list {
+      border-top: 1px solid var(--border);
+      padding-top: 16px;
+    }
+
+    .sources-list h4 {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    .sources-list ul {
+      list-style: none;
+    }
+
+    .sources-list li {
+      font-size: 0.8rem;
+      color: var(--accent-bluish);
+      margin-bottom: 4px;
+      word-break: break-all;
+    }
 
     .cards-grid {
       display: grid;
@@ -227,13 +287,24 @@
 
     .card:hover {
       transform: translateY(-3px);
-      box-shadow: 0 8px 28px rgba(0,0,0,0.09);
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.09);
     }
 
-    .card.teal   { border-left-color: var(--accent-teal); }
-    .card.orange { border-left-color: var(--accent-orange); }
-    .card.purple { border-left-color: var(--accent-purple); }
-    .card.bluish { border-left-color: var(--accent-bluish); }
+    .card.teal {
+      border-left-color: var(--accent-teal);
+    }
+
+    .card.orange {
+      border-left-color: var(--accent-orange);
+    }
+
+    .card.purple {
+      border-left-color: var(--accent-purple);
+    }
+
+    .card.bluish {
+      border-left-color: var(--accent-bluish);
+    }
 
     .card-title {
       font-family: 'DM Serif Display', serif;
@@ -277,41 +348,373 @@
       font-size: 0.9rem;
     }
 
-    /* ── ANIMATIONS ── */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(18px); }
-      to   { opacity: 1; transform: translateY(0); }
+    /* ── HERO COMPACT (when conversation is active) ── */
+    .hero-compact {
+      padding: 32px 48px 16px;
+      /* tighter top padding */
+      justify-content: flex-start;
+    }
+
+    .hero-compact .hero-title {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      /* smaller title */
+      margin-bottom: 0;
+    }
+
+    .hero-compact .search-wrapper {
+      display: none;
+      /* hide from hero, shown at bottom instead */
+    }
+
+    /* ── CONVERSATION ── */
+    .conversation {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 8px 48px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    /* ── MESSAGE BASE ── */
+    .msg {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+    /* ── USER MESSAGE ── */
+    .msg-user {
+      justify-content: flex-end;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .msg-user .msg-text {
+      font-size: 0.95rem;
+      font-weight: 300;
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    .msg-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 500;
+      flex-shrink: 0;
+      letter-spacing: 0;
+    }
+
+    .msg-icon-user {
+      background: linear-gradient(135deg, #f7b37a, #c9bfea);
+      color: white;
+    }
+
+    .msg-icon-llm {
+      background: linear-gradient(135deg, #9dd5cd, #b8a9e0);
+      color: white;
+    }
+
+    /* ── LLM MESSAGE ── */
+    .msg-llm {
+      justify-content: flex-start;
+      align-items: flex-start;
+    }
+
+    .msg-body {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .msg-llm .msg-text {
+      font-size: 0.95rem;
+      font-weight: 300;
+      color: var(--text-primary);
+      line-height: 1.75;
+      max-width: 580px;
+    }
+
+    .msg-meta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    /* ── SEARCH BAR AT BOTTOM ── */
+    .search-bottom-wrapper {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 0 48px 32px;
+    }
+
+    .search-bottom-wrapper .search-form {
+      display: flex;
+      align-items: center;
+      background: var(--surface);
+      border-radius: 50px;
+      padding: 10px 10px 10px 28px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      transition: box-shadow 0.2s;
+    }
+
+    .search-bottom-wrapper .search-form:focus-within {
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+    }
+
+    .search-bottom-wrapper .search-input {
+      flex: 1;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1rem;
+      color: var(--text-primary);
+      font-weight: 300;
+    }
+
+    .search-bottom-wrapper .search-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .search-bottom-wrapper .search-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--text-primary);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: transform 0.15s;
+    }
+
+    .search-bottom-wrapper .search-btn:hover {
+      transform: scale(1.05);
+    }
+
+    .search-bottom-wrapper .search-btn svg {
+      width: 18px;
+      height: 18px;
+      fill: none;
+      stroke: white;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
     }
 
     /* ── RESPONSIVE ── */
     @media (max-width: 640px) {
-      nav { padding: 16px 24px; }
-      .hero { padding: 60px 24px 30px; }
-      .cards-section { padding: 32px 24px 48px; }
-      .cards-grid { grid-template-columns: 1fr; }
+      .conversation {
+        padding: 8px 24px 24px;
+      }
+
+      .search-bottom-wrapper {
+        padding: 0 24px 24px;
+      }
+
+      .hero-compact {
+        padding: 24px 24px 12px;
+      }
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      nav {
+        padding: 16px 24px;
+      }
+
+      .hero {
+        padding: 60px 24px 30px;
+      }
+
+      .cards-section {
+        padding: 32px 24px 48px;
+      }
+
+      .cards-grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Find both search forms (main hero and bottom)
+      const forms = document.querySelectorAll('.search-form');
+      const conversation = document.querySelector('.conversation');
+      const hero = document.querySelector('.hero');
+      const cardsSection = document.querySelector('.cards-section');
+
+      // Add a bottom search wrapper if it doesn't exist
+      let bottomWrapper = document.querySelector('.search-bottom-wrapper');
+      if (!bottomWrapper) {
+        bottomWrapper = document.createElement('div');
+        bottomWrapper.className = 'search-bottom-wrapper';
+        bottomWrapper.style.display = 'none';
+        bottomWrapper.innerHTML = `
+          <form class="search-form" method="post">
+            <input class="search-input" type="text" name="query" placeholder="Ask a follow-up..." autocomplete="off" />
+            <button class="search-btn" type="submit" aria-label="Search">
+              <svg viewBox="0 0 24 24">
+                <circle cx="11" cy="11" r="7" />
+                <line x1="16.5" y1="16.5" x2="22" y2="22" />
+              </svg>
+            </button>
+          </form>
+        `;
+        hero.appendChild(bottomWrapper);
+        
+        // Attach listener to the new form too
+        attachFormListener(bottomWrapper.querySelector('.search-form'));
+      }
+
+      function attachFormListener(form) {
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const input = form.querySelector('.search-input');
+          const query = input.value.trim();
+          if (!query) return;
+
+          // Clear inputs
+          document.querySelectorAll('.search-input').forEach(inp => inp.value = '');
+
+          // UI transitions
+          hero.classList.add('hero-compact');
+          if (cardsSection) cardsSection.style.display = 'none';
+          
+          // Show bottom search form, hide hero search form is handled by CSS mostly, but we can ensure bottom wrapper is visible
+          if (bottomWrapper) bottomWrapper.style.display = 'block';
+
+          // Add user message
+          const userMsg = document.createElement('div');
+          userMsg.className = 'msg msg-user';
+          userMsg.innerHTML = `
+            <div class="msg-text">${query}</div>
+            <div class="msg-icon msg-icon-user">U</div>
+          `;
+          conversation.appendChild(userMsg);
+
+          // Add LLM message placeholder
+          const llmMsg = document.createElement('div');
+          llmMsg.className = 'msg msg-llm';
+          llmMsg.innerHTML = `
+            <div class="msg-icon msg-icon-llm">D</div>
+            <div class="msg-body">
+              <div class="msg-text"></div>
+              <div class="msg-meta"></div>
+            </div>
+          `;
+          conversation.appendChild(llmMsg);
+
+          const llmText = llmMsg.querySelector('.msg-text');
+          const llmMeta = llmMsg.querySelector('.msg-meta');
+
+          try {
+            const response = await fetch('/stream/', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+              body: new URLSearchParams({ query: query })
+            });
+
+            if (!response.ok) {
+              throw new Error(\`HTTP error! status: \${response.status}\`);
+            }
+
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder('utf-8');
+            let buffer = '';
+
+            while (true) {
+              const { done, value } = await reader.read();
+              if (done) break;
+              
+              buffer += decoder.decode(value, { stream: true });
+              const lines = buffer.split('\\n\\n');
+              buffer = lines.pop(); // keep incomplete chunk in buffer
+
+              for (const line of lines) {
+                if (line.startsWith('data: ')) {
+                  const dataStr = line.substring(6);
+                  try {
+                    const data = JSON.parse(dataStr);
+                    if (data.type === 'meta') {
+                      llmMeta.innerHTML = \`<span>\${data.accuracy}% accuracy</span><span class="sep">·</span><span>\${data.chunks} chunks</span>\`;
+                    } else if (data.type === 'token') {
+                      // We can append text directly, optionally handle line breaks
+                      llmText.appendChild(document.createTextNode(data.value));
+                    } else if (data.type === 'error') {
+                      const errSpan = document.createElement('span');
+                      errSpan.style.color = 'red';
+                      errSpan.textContent = \`\\nError: \${data.value}\`;
+                      llmText.appendChild(errSpan);
+                    } else if (data.type === 'done') {
+                      // done
+                    }
+                  } catch (err) {
+                    console.error('Error parsing JSON:', err, 'from line:', line);
+                  }
+                }
+              }
+            }
+          } catch (error) {
+            console.error('Fetch error:', error);
+            const errSpan = document.createElement('span');
+            errSpan.style.color = 'red';
+            errSpan.textContent = 'Failed to connect to the server.';
+            llmText.appendChild(errSpan);
+          }
+          
+          // Scroll to bottom
+          window.scrollTo(0, document.body.scrollHeight);
+        });
+      }
+
+      // Attach listener to existing forms
+      forms.forEach(attachFormListener);
+    });
+  </script>
 </head>
+
 <body>
 
   <!-- HERO -->
   <div class="hero">
     <h1 class="hero-title">Docker</h1>
 
+    <div class="conversation"></div>
+
     <div class="search-wrapper">
-      <form class="search-form" method="GET">
-        <input
-          class="search-input"
-          type="text"
-          name="q"
-          placeholder="Search the knowledge base…"
-          value="{{ query|default:'' }}"
-          autocomplete="off"
-        />
+      <form class="search-form" method="post">
+        <input class="search-input" type="text" name="query" placeholder="Search the knowledge base…" autocomplete="off" />
         <button class="search-btn" type="submit" aria-label="Search">
           <svg viewBox="0 0 24 24">
-            <circle cx="11" cy="11" r="7"/>
-            <line x1="16.5" y1="16.5" x2="22" y2="22"/>
+            <circle cx="11" cy="11" r="7" />
+            <line x1="16.5" y1="16.5" x2="22" y2="22" />
           </svg>
         </button>
       </form>
@@ -327,23 +730,23 @@
         <span class="section-dot dot-discover"></span>
         Discover
       </div>
-        <!-- Placeholder cards for development -->
-        <div class="cards-grid">
-          <a href="#" class="card orange">
-            <div class="card-title">Networking Commands</div>
-            <div class="card-excerpt">Basic Docker networking commands to list, inspect, and ...</div>
-            <div class="card-meta">
-              <span>94% accuracy</span><span class="sep">·</span><span>7 chunks</span>
-            </div>
-          </a>
-          <a href="#" class="card teal">
-            <div class="card-title">Volume Management</div>
-            <div class="card-excerpt">Creating and mounting volumes to persist data across ...</div>
-            <div class="card-meta">
-              <span>88% accuracy</span><span class="sep">·</span><span>5 chunks</span>
-            </div>
-          </a>
-        </div>
+      <!-- Placeholder cards for development -->
+      <div class="cards-grid">
+        <a href="#" class="card orange">
+          <div class="card-title">Networking Commands</div>
+          <div class="card-excerpt">Basic Docker networking commands to list, inspect, and ...</div>
+          <div class="card-meta">
+            <span>94% accuracy</span><span class="sep">·</span><span>7 chunks</span>
+          </div>
+        </a>
+        <a href="#" class="card teal">
+          <div class="card-title">Volume Management</div>
+          <div class="card-excerpt">Creating and mounting volumes to persist data across ...</div>
+          <div class="card-meta">
+            <span>88% accuracy</span><span class="sep">·</span><span>5 chunks</span>
+          </div>
+        </a>
+      </div>
     </div>
 
     <!-- MORE -->
@@ -356,14 +759,14 @@
       <div class="cards-grid">
         <a href="/about" class="card purple">
           <div class="card-title">About</div>
-          <div class="card-excerpt">Learn what this project is, how it was built, and what ...</div>
+          <div class="card-excerpt">Learn what this project is, how it was built, and what technologies ...</div>
           <div class="card-meta">
             <span>204 words</span><span class="sep">·</span><span></span>
           </div>
         </a>
         <a href="/tech_stack" class="card bluish">
           <div class="card-title">Tech Stack</div>
-          <div class="card-excerpt">The tools powering this app — Django, Ollama, AWS ...</div>
+          <div class="card-excerpt">The tools powering this app are Django, Ollama, AWS Bedrock ...</div>
           <div class="card-meta">
             <span>310 words</span><span class="sep">·</span><span></span>
           </div>
@@ -374,4 +777,5 @@
   </section>
 
 </body>
+
 </html>

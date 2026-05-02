@@ -597,11 +597,13 @@
     <div class="msg-icon msg-icon-llm">AI</div>
     <div class="msg-body">
       <div class="msg-text"></div>
+      <div class="msg-meta"></div>
     </div>
   `;
       conversation.appendChild(llm_msg);
 
       const msg_text = llm_msg.querySelector('.msg-text');
+      const msg_meta = llm_msg.querySelector('.msg-meta');
 
       // Stream the response
       const response = await fetch('/stream/?q=' + query);
@@ -625,13 +627,13 @@
                 llm_msg.scrollIntoView({ behavior: 'smooth', block: 'end' });
               }
 
-              // Optional: use meta info
-              // if (data.type === "meta") {
-              //   console.log("Accuracy:", data.accuracy, "Chunks:", data.chunks);
-              // }
+              if (data.type === "meta") {
+                msg_meta.textContent += data.accuracy + "% Accuracy \xa0\xa0\xa0\xa0\xa0" + data.chunks + " Chunks";
+              }
 
             } catch (e) { }
-          });
+          }
+        );
       }
     }
 
@@ -644,6 +646,18 @@
 
         document.querySelector('.search-input').value = ''; // Clear input
         await get_response(query);
+      });
+
+      const networkingCommands = document.querySelector('.networking-commands-card');
+      networkingCommands.addEventListener('click', async (event) => {
+        event.preventDefault();
+        await get_response("Networking Commands.")
+      });
+
+      const volumeManagementCard = document.querySelector('.volume-management-card');
+      volumeManagementCard.addEventListener('click', async (event) => {
+        event.preventDefault();
+        await get_response("Volume Management.")
       });
     });
   </script>
@@ -681,20 +695,20 @@
       </div>
       <!-- Placeholder cards for development -->
       <div class="cards-grid">
-        <a href="#" class="card orange">
+        <div class="card orange networking-commands-card">
           <div class="card-title">Networking Commands</div>
           <div class="card-excerpt">Basic Docker networking commands to list, inspect, and ...</div>
           <div class="card-meta">
-            <span>94% accuracy</span><span class="sep">·</span><span>7 chunks</span>
+            <span>64% accuracy</span><span class="sep">·</span><span>5 chunks</span>
           </div>
-        </a>
-        <a href="#" class="card teal">
+        </div>
+        <div class="card teal volume-management-card">
           <div class="card-title">Volume Management</div>
           <div class="card-excerpt">Creating and mounting volumes to persist data across ...</div>
           <div class="card-meta">
-            <span>88% accuracy</span><span class="sep">·</span><span>5 chunks</span>
+            <span>63% accuracy</span><span class="sep">·</span><span>5 chunks</span>
           </div>
-        </a>
+        </div>
       </div>
     </div>
 

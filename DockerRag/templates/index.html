@@ -372,7 +372,7 @@
     /* ── CONVERSATION ── */
     .conversation {
       width: 720px;
-      max-height: 60vh;
+      max-height: 55vh;
       overflow-y: auto;
       margin: 0 auto;
       padding: 8px 48px 24px;
@@ -608,15 +608,15 @@
 
       // ── Moved outside the loop so buffer persists across tokens ──
       let speechBuffer = '';
-      const WORD_THRESHOLD = 5;
+      const WORD_THRESHOLD = 3;
 
       function speakBuffered(token) {
         speechBuffer += token;
-        const hasPunctuation = /[.!?,;:]\s*$/.test(speechBuffer);
+        const hasPunctuation = /[.!?,;]\s*$/.test(speechBuffer);
         if (hasPunctuation || wordCount >= WORD_THRESHOLD) {
-          speak(speechBuffer.trim());
+          speakPolly(speechBuffer.trim());
           speechBuffer = '';
-        }
+        }   
       }
 
       while (true) {
@@ -624,7 +624,9 @@
         if (done) {
           // Flush remaining buffer when stream ends
           if (speechBuffer.trim()) {
-            speak(speechBuffer.trim());
+
+            // Local TTS
+            // speak(speechBuffer.trim());
             speechBuffer = '';
           }
           break;
@@ -641,7 +643,9 @@
               if (data.type === "token") {
                 llm_msg.scrollIntoView({ behavior: 'smooth', block: 'end' });
                 msg_text.textContent += data.value;
-                speakBuffered(data.value);  
+
+                // Make it speak 
+                // speakBuffered(data.value);
               }
 
               if (data.type === "meta") {
@@ -653,12 +657,43 @@
       }
     }
 
+    // ── Audio queue to prevent overlap ──
+    const audioQueue = [];
+    let isPlaying = false;
+
+    async function speakPolly(text) {
+      const response = await fetch('/polly/?text=' + encodeURIComponent(text));
+      const audioBlob = await response.blob();
+      const audioUrl = URL.createObjectURL(audioBlob);
+
+      audioQueue.push(audioUrl);
+      if (!isPlaying) {
+        playNext();
+      }
+    }
+
+    function playNext() {
+      if (audioQueue.length === 0) {
+        isPlaying = false;
+        return;
+      }
+
+      isPlaying = true;
+      const audioUrl = audioQueue.shift();
+      const audio = new Audio(audioUrl);
+
+      audio.play();
+      audio.onended = () => {
+        URL.revokeObjectURL(audioUrl);
+        playNext();
+      };
+    }
+
     function speak(text) {
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.rate = 1;
-      utterance.pitch = 1.2;
+      utterance.pitch = 1.1;
       const voices = speechSynthesis.getVoices();
-      
       utterance.voice = voices[3];
       speechSynthesis.speak(utterance);
     }

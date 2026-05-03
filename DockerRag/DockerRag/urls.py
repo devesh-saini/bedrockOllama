@@ -23,5 +23,6 @@ urlpatterns = [
     path('', views.home),
     path('about/', views.about),
     path('tech_stack/', views.tech_stack),
+    path('polly/', views.polly_speak, name='polly_speak'),
     path('stream/', views.stream_response, name='stream')
 ]   

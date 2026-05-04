@@ -1,9 +1,15 @@
+import os
 import json
 import boto3
 import requests
+from dotenv import load_dotenv
 
-bedrock_client = boto3.client(service_name='bedrock-agent-runtime', region_name='eu-north-1')
-knowledgeBaseId = "D9GSQGHM9G"
+load_dotenv()
+
+region = os.environ.get(REGION)
+knowledgeBaseId = os.environ.get(BEDROCK_KB_ID)
+
+bedrock_client = boto3.client(service_name='bedrock-agent-runtime', region=region)
 
 
 def is_ollama_running():

@@ -4,6 +4,12 @@ from django.http import StreamingHttpResponse, HttpResponse
 from django.shortcuts import render
 from .rag import retrieve_results, parse_results, generate_with_ollama, generate_with_bedrock, is_ollama_running, knowledgeBaseId
 
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
+Region = os.environ.get("REGION")
+knowledgeBaseId = os.environ.get("BEDROCK_KB_ID")
 
 def home(request):
     return render(request, 'index.html', {
@@ -50,7 +56,7 @@ def stream_response(request):
 
 
 def polly_speak(request):
-    polly_client = boto3.client('polly', region_name='eu-north-1')
+    polly_client = boto3.client('polly', region_name=Region)
 
     text = request.GET.get('text', '').strip()
     if not text:

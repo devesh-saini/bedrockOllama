@@ -151,6 +151,11 @@
       transition: transform 0.15s, background 0.2s;
     }
 
+    .stt-btn {
+      margin-right: 8px;
+      background: var(--text-secondary);
+    }
+
     .search-btn:hover {
       transform: scale(1.05);
       background: #333;
@@ -616,7 +621,7 @@
         if (hasPunctuation || wordCount >= WORD_THRESHOLD) {
           speakPolly(speechBuffer.trim());
           speechBuffer = '';
-        }   
+        }
       }
 
       while (true) {
@@ -699,6 +704,50 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+      const stt_btn = document.querySelector('.stt-btn');
+      const search_input = document.querySelector('.search-input');
+      const recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.lang = 'en-US';
+
+      let isListening = false;
+
+      stt_btn.addEventListener('click', (event) => {
+        event.preventDefault();
+
+        if (!isListening) {
+          recognition.start();
+          search_input.value = "Listening...";
+          stt_btn.classList.add('stop-stt');
+          isListening = true;
+
+        } else {
+          recognition.stop();
+          stt_btn.classList.remove('stop-stt');
+          isListening = false;
+        }
+      });
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        search_input.value = transcript;
+        stt_btn.classList.remove('stop-stt');
+        isListening = false;
+      };
+
+      recognition.onerror = (event) => {
+        console.error('STT error:', event.error);
+        search_input.value = '';
+        stt_btn.classList.remove('stop-stt');
+        isListening = false;
+      };
+
+      recognition.onend = () => {
+        stt_btn.classList.remove('stop-stt');
+        isListening = false;
+      };
+
       const search_form = document.querySelector('.search-form');
       search_form.addEventListener('submit', async (event) => {
         event.preventDefault();
@@ -719,7 +768,7 @@
         event.preventDefault();
         await get_response("Volume Management.");
       });
-    });  
+    });
   </script>
 </head>
 
@@ -734,6 +783,12 @@
     <div class="search-wrapper">
       <form class="search-form" method="get">
         <input class="search-input" type="text" name="q" placeholder="Search the knowledge base…" autocomplete="off" />
+        <button class="search-btn stt-btn" type="submit" aria-label="Search">
+          <svg viewBox="0 0 24 24">
+            <circle cx="11" cy="11" r="7" />
+            <line x1="16.5" y1="16.5" x2="22" y2="22" />
+          </svg>
+        </button>
         <button class="search-btn" type="submit" aria-label="Search">
           <svg viewBox="0 0 24 24">
             <circle cx="11" cy="11" r="7" />

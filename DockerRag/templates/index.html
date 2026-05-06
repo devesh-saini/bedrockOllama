@@ -151,9 +151,17 @@
       transition: transform 0.15s, background 0.2s;
     }
 
-    .stt-btn {
+    .start-stop-stt {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
       margin-right: 8px;
       background: var(--text-secondary);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .search-btn:hover {
@@ -704,49 +712,77 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      const stt_btn = document.querySelector('.stt-btn');
+      function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+      }
+
+      let mediaRecorder;
+      let audioChunks = [];
+      let isRecording = false;
+
+      const start_stop_stt = document.querySelector('.start-stop-stt');
       const search_input = document.querySelector('.search-input');
-      const recognition = new SpeechRecognition();
-      recognition.continuous = false;
-      recognition.interimResults = false;
-      recognition.lang = 'en-US';
 
-      let isListening = false;
+      start_stop_stt.addEventListener('click', async () => {
+        if (!isRecording) {
+          // Start recording
+          try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaRecorder = new MediaRecorder(stream);
+            audioChunks = [];
 
-      stt_btn.addEventListener('click', (event) => {
-        event.preventDefault();
+            mediaRecorder.ondataavailable = (event) => {
+              audioChunks.push(event.data);
+            };
 
-        if (!isListening) {
-          recognition.start();
-          search_input.value = "Listening...";
-          stt_btn.classList.add('stop-stt');
-          isListening = true;
+            mediaRecorder.onstop = async () => {
+              const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+              const formData = new FormData();
+              formData.append('audio', audioBlob, 'recording.wav');
+
+              search_input.value = "Processing...";
+
+              try {
+                const response = await fetch('/transcribe/', {
+                  method: 'POST',
+                  body: formData,
+                  headers: {
+                    'X-CSRFToken': getCookie('csrftoken')
+                  }
+                });
+
+                const data = await response.json();
+                search_input.value = data.transcript || '';
+
+              } catch (error) {
+                console.error('Transcription error:', error);
+                search_input.value = '';
+              }
+
+              // Stop all mic tracks
+              stream.getTracks().forEach(track => track.stop());
+            };
+
+            mediaRecorder.start();
+            search_input.value = "Listening...";
+            isRecording = true;
+            console.log('Recording started.');
+
+          } catch (error) {
+            console.error('Mic error:', error);
+            search_input.value = 'Microphone access denied.';
+          }
 
         } else {
-          recognition.stop();
-          stt_btn.classList.remove('stop-stt');
-          isListening = false;
+          // Stop recording
+          mediaRecorder.stop();
+          isRecording = false;
+          console.log('Recording stopped.');
         }
       });
 
-      recognition.onresult = (event) => {
-        const transcript = event.results[0][0].transcript;
-        search_input.value = transcript;
-        stt_btn.classList.remove('stop-stt');
-        isListening = false;
-      };
-
-      recognition.onerror = (event) => {
-        console.error('STT error:', event.error);
-        search_input.value = '';
-        stt_btn.classList.remove('stop-stt');
-        isListening = false;
-      };
-
-      recognition.onend = () => {
-        stt_btn.classList.remove('stop-stt');
-        isListening = false;
-      };
 
       const search_form = document.querySelector('.search-form');
       search_form.addEventListener('submit', async (event) => {
@@ -783,12 +819,10 @@
     <div class="search-wrapper">
       <form class="search-form" method="get">
         <input class="search-input" type="text" name="q" placeholder="Search the knowledge base…" autocomplete="off" />
-        <button class="search-btn stt-btn" type="submit" aria-label="Search">
-          <svg viewBox="0 0 24 24">
-            <circle cx="11" cy="11" r="7" />
-            <line x1="16.5" y1="16.5" x2="22" y2="22" />
-          </svg>
-        </button>
+
+        <div class="start-stop-stt">l|l|l
+        </div>
+
         <button class="search-btn" type="submit" aria-label="Search">
           <svg viewBox="0 0 24 24">
             <circle cx="11" cy="11" r="7" />

@@ -45,12 +45,15 @@ def parse_results(retrieval_results):
 
 def generate_with_ollama(query: str, contexts: list, model: str = "mistral:latest"):
     context_text = "\n\n".join([f"[Source {i+1}]: {c['text']}" for i, c in enumerate(contexts)])
-
+    past_queries = [];
     prompt = f"""Use the following context to answer the question.
 
     Context:
     {context_text}
 
+    Conversation till now: 
+    {past_queries}
+    
     Question: {query}
 
     Answer:"""
@@ -70,6 +73,9 @@ def generate_with_ollama(query: str, contexts: list, model: str = "mistral:lates
             data = json.loads(line.decode('utf-8'))
             if not data.get("done"):
                 yield data.get("response", "")
+
+    past_queries += query
+    print(past_queries)
 
 
 def generate_with_bedrock(query: str, contexts: list):

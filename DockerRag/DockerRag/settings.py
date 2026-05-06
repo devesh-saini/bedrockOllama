@@ -10,7 +10,19 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
 from pathlib import Path
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+from dotenv import load_dotenv
+
+load_dotenv()
+sentry_sdk.init(
+    dsn=os.environ.get("SENTRY_DSN"),  # from your Sentry project
+    integrations=[DjangoIntegration()],
+    traces_sample_rate=1.0,   # performance monitoring
+    send_default_pii=False    # don't send personal data
+)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent

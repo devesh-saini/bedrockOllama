@@ -1,15 +1,22 @@
 import json
+import os
+import tempfile
 import boto3
-from django.http import StreamingHttpResponse, HttpResponse
+from django.http import StreamingHttpResponse, HttpResponse, JsonResponse
 from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
+from faster_whisper import WhisperModel
 from .rag import retrieve_results, parse_results, generate_with_ollama, generate_with_bedrock, is_ollama_running, knowledgeBaseId
 
-import os
 from dotenv import load_dotenv
 load_dotenv()
 
 Region = os.environ.get("REGION")
 knowledgeBaseId = os.environ.get("BEDROCK_KB_ID")
+
+# Load Whisper model once at startup
+whisper_model = WhisperModel("base", device="cpu", compute_type="int8")
+
 
 def home(request):
     return render(request, 'index.html', {
@@ -36,7 +43,6 @@ def stream_response(request):
             meta = json.dumps({"type": "meta", "accuracy": accuracy, "chunks": chunk_count})
             yield f"data: {meta}\n\n"
 
-            # Route to Ollama or Bedrock based on availability
             if is_ollama_running():
                 generator = generate_with_ollama(query, contexts)
             else:
@@ -71,6 +77,37 @@ def polly_speak(request):
 
     audio_stream = response['AudioStream'].read()
     return HttpResponse(audio_stream, content_type='audio/mpeg')
+
+
+@csrf_exempt
+def transcribe_audio(request):
+    if request.method != 'POST':
+        return JsonResponse({'error': 'POST required'}, status=405)
+
+    audio_file = request.FILES.get('audio')
+    if not audio_file:
+        return JsonResponse({'error': 'No audio file provided'}, status=400)
+
+    try:
+        # Save to a temp file — faster-whisper needs a file path
+        with tempfile.NamedTemporaryFile(suffix='.wav', delete=False) as tmp:
+            for chunk in audio_file.chunks():
+                tmp.write(chunk)
+            tmp_path = tmp.name
+
+        # Transcribe
+        segments, _ = whisper_model.transcribe(tmp_path, language='en')
+        transcript = " ".join([segment.text for segment in segments]).strip()
+
+        return JsonResponse({'transcript': transcript})
+
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+    finally:
+        # Clean up temp file
+        if os.path.exists(tmp_path):
+            os.remove(tmp_path)
 
 
 def about(request):

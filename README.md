@@ -41,12 +41,11 @@ Browser (HTML / CSS / JS)
 | Web framework | Django 5 |
 | Knowledge base & retrieval | AWS Bedrock |
 | Local LLM | Ollama + Mistral |
-| Bedrock fallback | Claude 3 Sonnet via Bedrock |
+| Bedrock fallback | Ollama + Mistral |
 | Text to Speech | AWS Polly |
 | Speech to Text | faster-whisper (local) |
 | Error monitoring | Sentry |
 | Frontend | Vanilla HTML, CSS, JS |
-| Typography | DM Serif Display + DM Sans |
 
 ---
 
@@ -137,7 +136,7 @@ Visit `http://127.0.0.1:8000`
 Queries are answered using real documentation chunks retrieved from AWS Bedrock — not hallucinated from model weights. Each response shows an accuracy score and chunk count.
 
 **Ollama Fallback**
-On every request, the app checks if Ollama is running. If it is, Mistral handles generation locally at zero cost. If not, Bedrock's Claude model takes over automatically — no user-facing disruption.
+On every request, the app checks if Ollama is running. If it is, Mistral handles generation locally at zero cost. If not, Bedrock's  model takes over automatically — no user-facing disruption.
 
 **Streaming Responses**
 Responses stream token by token via Server-Sent Events (SSE), giving a real-time feel without page reloads.
@@ -152,25 +151,6 @@ Conversation history is stored in Django sessions. Follow-up questions are passe
 
 ## Project Structure
 
-```
-bedrockOllama/
-└── DockerRag/
-    ├── DockerRag/
-    │   ├── settings.py
-    │   ├── urls.py
-    │   ├── views.py
-    │   ├── rag.py
-    │   └── wsgi.py
-    ├── templates/
-    │   ├── index.html
-    │   ├── about.html
-    │   └── tech_stack.html
-    ├── static/
-    ├── manage.py
-    ├── requirements.txt
-    └── .env.example
-```
-
 ---
 
 ## Running the RAG pipeline standalone
@@ -181,9 +161,3 @@ python DockerRag/rag.py
 >>> How do I create a Docker network?
 ```
 
----
-
-## Author
-
-**Devesh Saini**
-[github.com/devesh-saini](https://github.com/devesh-saini)

@@ -1,2 +1,48 @@
+# ── Environment & Secrets ──
+.env
+.env.*
+!.env.example
+
+# ── Python ──
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# ── Django ──
+db.sqlite3
+staticfiles/
+mediafiles/
+*.log
+
+# ── Virtual Environment ──
 bedrockrag/
-DockerRag/DockerRag/.env
+.bedrockrag/
+.env/
+
+# ── Docker ──
+.dockerignore
+
+# ── IDE ──
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# ── AWS ──
+.aws/
+*.pem
+
+# ── Whisper / ML ──
+*.pt
+*.bin
+*.onnx
+models/

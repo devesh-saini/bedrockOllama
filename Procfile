@@ -1,1 +1,1 @@
-web: gunicorn --bind 0.0.0.0:$PORT DockerRag.wsgi:application
+web: PYTHONPATH=DockerRag gunicorn --bind 0.0.0.0:$PORT DockerRag.wsgi:application

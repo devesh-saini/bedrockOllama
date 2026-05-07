@@ -2,7 +2,7 @@
 
 A voice-enabled, conversational RAG (Retrieval-Augmented Generation) application for Docker documentation. Ask questions in plain English — or speak them — and get grounded, accurate answers powered by AWS Bedrock and a locally running Ollama model.
 
-![Docker Knowledge Base](screenshot.png)
+![Docker Knowledge Base]("../devesh-saini/Screenshot 2026-05-07 200916.png")
 
 ---
 

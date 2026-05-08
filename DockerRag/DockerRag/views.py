@@ -6,7 +6,9 @@ from django.http import StreamingHttpResponse, HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from faster_whisper import WhisperModel
-from .rag import retrieve_results, parse_results, generate_with_ollama, generate_with_bedrock, is_ollama_running, knowledgeBaseId
+from .rag import (retrieve_results, parse_results, generate_with_ollama,
+                  generate_with_bedrock, is_ollama_running, knowledgeBaseId,
+                  ingest_document, retrieve_from_chroma)
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -34,8 +36,15 @@ def stream_response(request):
 
     def event_stream():
         try:
+            # Retrieve from Bedrock
             raw_results = retrieve_results(query, knowledgeBaseId)
-            contexts = parse_results(raw_results)
+            bedrock_contexts = parse_results(raw_results)
+
+            # Retrieve from ChromaDB (local documents)
+            local_contexts = retrieve_from_chroma(query)
+
+            # Merge — local docs first, then Bedrock
+            contexts = local_contexts + bedrock_contexts
 
             accuracy = round((contexts[0]["score"] * 100) + 25) if contexts else 0
             chunk_count = len(contexts)
@@ -89,13 +98,11 @@ def transcribe_audio(request):
         return JsonResponse({'error': 'No audio file provided'}, status=400)
 
     try:
-        # Save to a temp file — faster-whisper needs a file path
         with tempfile.NamedTemporaryFile(suffix='.wav', delete=False) as tmp:
             for chunk in audio_file.chunks():
                 tmp.write(chunk)
             tmp_path = tmp.name
 
-        # Transcribe
         segments, _ = whisper_model.transcribe(tmp_path, language='en')
         transcript = " ".join([segment.text for segment in segments]).strip()
 
@@ -105,7 +112,48 @@ def transcribe_audio(request):
         return JsonResponse({'error': str(e)}, status=500)
 
     finally:
-        # Clean up temp file
+        if os.path.exists(tmp_path):
+            os.remove(tmp_path)
+
+
+@csrf_exempt
+def upload_document(request):
+    if request.method != 'POST':
+        return JsonResponse({'error': 'POST required'}, status=405)
+
+    uploaded_file = request.FILES.get('document')
+    if not uploaded_file:
+        return JsonResponse({'error': 'No document provided'}, status=400)
+
+    # Validate file type
+    allowed_extensions = ['.pdf', '.txt', '.docx', '.md', '.csv']
+    ext = os.path.splitext(uploaded_file.name)[1].lower()
+    if ext not in allowed_extensions:
+        return JsonResponse({
+            'error': f'Unsupported file type. Allowed: {", ".join(allowed_extensions)}'
+        }, status=400)
+
+    try:
+        # Save to temp file — LangChain needs a file path
+        with tempfile.NamedTemporaryFile(suffix=ext, delete=False) as tmp:
+            for chunk in uploaded_file.chunks():
+                tmp.write(chunk)
+            tmp_path = tmp.name
+
+        # Ingest into ChromaDB via rag.py
+        chunk_count = ingest_document(tmp_path, uploaded_file.name)
+
+        return JsonResponse({
+            'success': True,
+            'filename': uploaded_file.name,
+            'chunks': chunk_count,
+            'message': f'{uploaded_file.name} ingested successfully into local knowledge base.'
+        })
+
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+    finally:
         if os.path.exists(tmp_path):
             os.remove(tmp_path)
 

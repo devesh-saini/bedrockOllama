@@ -37,10 +37,7 @@
       --radius: 14px;
     }
 
-    html,
-    body {
-      height: 100%;
-    }
+    html, body { height: 100%; }
 
     body {
       background-color: var(--bg);
@@ -52,26 +49,7 @@
       scroll-behavior: smooth;
     }
 
-    body::-webkit-scrollbar {
-      display: none;
-    }
-
-    /* ── NAV ── */
-    nav {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 20px 48px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .nav-logo {
-      font-family: 'DM Serif Display', serif;
-      font-size: 1.25rem;
-      color: var(--text-primary);
-      text-decoration: none;
-      letter-spacing: -0.01em;
-    }
+    body::-webkit-scrollbar { display: none; }
 
     /* ── HERO ── */
     .hero {
@@ -90,7 +68,6 @@
       font-weight: 400;
       letter-spacing: -0.03em;
       color: #9fb7d9;
-      /* Fallback if gradient text is unsupported */
       background: linear-gradient(90deg, #8fb8d3 0%, #b79bdc 45%, #f0b186 100%);
       -webkit-background-clip: text;
       background-clip: text;
@@ -133,9 +110,7 @@
       font-weight: 300;
     }
 
-    .search-input::placeholder {
-      color: var(--text-muted);
-    }
+    .search-input::placeholder { color: var(--text-muted); }
 
     .search-btn {
       width: 44px;
@@ -162,12 +137,12 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      color: white;
+      font-size: 0.65rem;
+      font-weight: 500;
     }
 
-    .search-btn:hover {
-      transform: scale(1.05);
-      background: #333;
-    }
+    .search-btn:hover { transform: scale(1.05); background: #333; }
 
     .search-btn svg {
       width: 18px;
@@ -179,6 +154,61 @@
       stroke-linejoin: round;
     }
 
+    /* ── UPLOAD BUTTON ── */
+    .upload-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      margin-right: 8px;
+      background: var(--text-secondary);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background 0.2s, transform 0.15s;
+    }
+
+    .upload-btn:hover { background: #666; transform: scale(1.05); }
+
+    .upload-btn svg {
+      width: 18px;
+      height: 18px;
+      fill: none;
+      stroke: white;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* ── UPLOAD TOAST ── */
+    .upload-toast {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--text-primary);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 50px;
+      font-size: 0.82rem;
+      font-weight: 400;
+      opacity: 0;
+      transition: opacity 0.3s, transform 0.3s;
+      pointer-events: none;
+      z-index: 999;
+      white-space: nowrap;
+    }
+
+    .upload-toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .upload-toast.success { background: #4caf50; }
+    .upload-toast.error   { background: #e57373; }
+
     /* ── CARDS SECTION ── */
     .cards-section {
       padding: 10px 10px 160px;
@@ -188,9 +218,7 @@
       animation: fadeUp 0.7s ease 0.2s both;
     }
 
-    .cards-row {
-      margin-bottom: 40px;
-    }
+    .cards-row { margin-bottom: 40px; }
 
     @media (min-width: 848px) {
       .cards-section {
@@ -199,10 +227,7 @@
         gap: 24px;
         align-items: start;
       }
-
-      .cards-row {
-        margin-bottom: 0;
-      }
+      .cards-row { margin-bottom: 0; }
     }
 
     .section-label {
@@ -224,61 +249,8 @@
       flex-shrink: 0;
     }
 
-    .dot-discover {
-      background: var(--dot-discover);
-    }
-
-    .dot-more {
-      background: var(--dot-more);
-    }
-
-    /* ── RESULTS ── */
-    .results-section {
-      padding: 0 48px 40px;
-      max-width: 800px;
-      margin: 0 auto;
-      width: 100%;
-      animation: fadeUp 0.7s ease 0.15s both;
-    }
-
-    .result-card {
-      background: var(--surface);
-      border-radius: var(--radius);
-      padding: 32px;
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow);
-    }
-
-    .answer-content {
-      font-size: 1.1rem;
-      line-height: 1.6;
-      color: var(--text-primary);
-      margin-bottom: 24px;
-    }
-
-    .sources-list {
-      border-top: 1px solid var(--border);
-      padding-top: 16px;
-    }
-
-    .sources-list h4 {
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--text-muted);
-      margin-bottom: 12px;
-    }
-
-    .sources-list ul {
-      list-style: none;
-    }
-
-    .sources-list li {
-      font-size: 0.8rem;
-      color: var(--accent-bluish);
-      margin-bottom: 4px;
-      word-break: break-all;
-    }
+    .dot-discover { background: var(--dot-discover); }
+    .dot-more     { background: var(--dot-more); }
 
     .cards-grid {
       display: grid;
@@ -308,21 +280,10 @@
       box-shadow: 0 8px 28px rgba(0, 0, 0, 0.09);
     }
 
-    .card.teal {
-      border-left-color: var(--accent-teal);
-    }
-
-    .card.orange {
-      border-left-color: var(--accent-orange);
-    }
-
-    .card.purple {
-      border-left-color: var(--accent-purple);
-    }
-
-    .card.bluish {
-      border-left-color: var(--accent-bluish);
-    }
+    .card.teal    { border-left-color: var(--accent-teal); }
+    .card.orange  { border-left-color: var(--accent-orange); }
+    .card.purple  { border-left-color: var(--accent-purple); }
+    .card.bluish  { border-left-color: var(--accent-bluish); }
 
     .card-title {
       font-family: 'DM Serif Display', serif;
@@ -354,22 +315,11 @@
       font-weight: 400;
     }
 
-    .card-meta .sep {
-      color: var(--border);
-    }
+    .card-meta .sep { color: var(--border); }
 
-    /* ── EMPTY STATE ── */
-    .empty-state {
-      text-align: center;
-      padding: 60px 20px;
-      color: var(--text-muted);
-      font-size: 0.9rem;
-    }
-
-    /* ── HERO COMPACT (when conversation is active) ── */
+    /* ── HERO COMPACT ── */
     .hero-compact {
       padding: 32px 48px 16px;
-      /* tighter top padding */
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -378,7 +328,6 @@
 
     .hero-compact .hero-title {
       font-size: clamp(2.5rem, 5vw, 4rem);
-      /* smaller title */
       padding-bottom: 24px;
     }
 
@@ -395,9 +344,7 @@
       scroll-behavior: smooth;
     }
 
-    .conversation::-webkit-scrollbar {
-      display: none;
-    }
+    .conversation::-webkit-scrollbar { display: none; }
 
     /* ── MESSAGE BASE ── */
     .msg {
@@ -432,7 +379,6 @@
       font-size: 0.7rem;
       font-weight: 500;
       flex-shrink: 0;
-      letter-spacing: 0;
     }
 
     .msg-icon-user {
@@ -509,9 +455,7 @@
       font-weight: 300;
     }
 
-    .search-bottom-wrapper .search-input::placeholder {
-      color: var(--text-muted);
-    }
+    .search-bottom-wrapper .search-input::placeholder { color: var(--text-muted); }
 
     .search-bottom-wrapper .search-btn {
       width: 44px;
@@ -527,9 +471,7 @@
       transition: transform 0.15s;
     }
 
-    .search-bottom-wrapper .search-btn:hover {
-      transform: scale(1.05);
-    }
+    .search-bottom-wrapper .search-btn:hover { transform: scale(1.05); }
 
     .search-bottom-wrapper .search-btn svg {
       width: 18px;
@@ -541,271 +483,22 @@
       stroke-linejoin: round;
     }
 
-    /* ── RESPONSIVE ── */
-    @media (max-width: 640px) {
-      .conversation {
-        padding: 8px 24px 24px;
-      }
-
-      .search-bottom-wrapper {
-        padding: 0 24px 24px;
-      }
-
-      .hero-compact {
-        padding: 24px 24px 12px;
-      }
-    }
-
     /* ── ANIMATIONS ── */
     @keyframes fadeUp {
-      from {
-        opacity: 0;
-        transform: translateY(18px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
     /* ── RESPONSIVE ── */
     @media (max-width: 640px) {
-      nav {
-        padding: 16px 24px;
-      }
-
-      .hero {
-        padding: 60px 24px 30px;
-      }
-
-      .cards-section {
-        padding: 32px 24px 48px;
-      }
-
-      .cards-grid {
-        grid-template-columns: 1fr;
-      }
+      .hero { padding: 60px 24px 30px; }
+      .cards-section { padding: 32px 24px 48px; }
+      .cards-grid { grid-template-columns: 1fr; }
+      .conversation { padding: 8px 24px 24px; }
+      .search-bottom-wrapper { padding: 0 24px 24px; }
+      .hero-compact { padding: 24px 24px 12px; }
     }
   </style>
-
-  <script>
-    async function get_response(query) {
-      const conversation = document.querySelector('.conversation');
-
-      const user_msg = document.createElement('div');
-      user_msg.classList.add('msg', 'msg-user');
-      user_msg.innerHTML = `
-    <span class="msg-text">${query}</span>
-    <div class="msg-icon msg-icon-user">You</div>
-  `;
-      conversation.appendChild(user_msg);
-
-      const llm_msg = document.createElement('div');
-      llm_msg.classList.add('msg', 'msg-llm');
-      llm_msg.innerHTML = `
-    <div class="msg-icon msg-icon-llm">AI</div>
-    <div class="msg-body">
-      <div class="msg-text msg-text-llm"></div>
-      <div class="msg-meta"></div>
-    </div>
-  `;
-      conversation.appendChild(llm_msg);
-
-      const msg_text = llm_msg.querySelector('.msg-text');
-      const msg_meta = llm_msg.querySelector('.msg-meta');
-
-      const response = await fetch('/stream/?q=' + encodeURIComponent(query));
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-
-      // ── Moved outside the loop so buffer persists across tokens ──
-      let speechBuffer = '';
-      const WORD_THRESHOLD = 3;
-
-      function speakBuffered(token) {
-        speechBuffer += token;
-        const hasPunctuation = /[.!?,;]\s*$/.test(speechBuffer);
-        if (hasPunctuation || wordCount >= WORD_THRESHOLD) {
-          speakPolly(speechBuffer.trim());
-          speechBuffer = '';
-        }
-      }
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) {
-          // Flush remaining buffer when stream ends
-          if (speechBuffer.trim()) {
-
-            // Local TTS
-            // speak(speechBuffer.trim());
-            speechBuffer = '';
-          }
-          break;
-        }
-
-        const chunk = decoder.decode(value);
-
-        chunk.split("\n")
-          .filter(line => line.startsWith("data: "))
-          .forEach(line => {
-            try {
-              const data = JSON.parse(line.slice(6));
-
-              if (data.type === "token") {
-                llm_msg.scrollIntoView({ behavior: 'smooth', block: 'end' });
-                msg_text.textContent += data.value;
-
-                // Make it speak 
-                // speakBuffered(data.value);
-              }
-
-              if (data.type === "meta") {
-                msg_meta.textContent += data.accuracy + "% Accuracy \xa0\xa0\xa0\xa0\xa0" + data.chunks + " Chunks";
-              }
-
-            } catch (e) { }
-          });
-      }
-    }
-
-    // ── Audio queue to prevent overlap ──
-    const audioQueue = [];
-    let isPlaying = false;
-
-    async function speakPolly(text) {
-      const response = await fetch('/polly/?text=' + encodeURIComponent(text));
-      const audioBlob = await response.blob();
-      const audioUrl = URL.createObjectURL(audioBlob);
-
-      audioQueue.push(audioUrl);
-      if (!isPlaying) {
-        playNext();
-      }
-    }
-
-    function playNext() {
-      if (audioQueue.length === 0) {
-        isPlaying = false;
-        return;
-      }
-
-      isPlaying = true;
-      const audioUrl = audioQueue.shift();
-      const audio = new Audio(audioUrl);
-
-      audio.play();
-      audio.onended = () => {
-        URL.revokeObjectURL(audioUrl);
-        playNext();
-      };
-    }
-
-    function speak(text) {
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.rate = 1;
-      utterance.pitch = 1.1;
-      const voices = speechSynthesis.getVoices();
-      utterance.voice = voices[3];
-      speechSynthesis.speak(utterance);
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      function getCookie(name) {
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`);
-        if (parts.length === 2) return parts.pop().split(';').shift();
-      }
-
-      let mediaRecorder;
-      let audioChunks = [];
-      let isRecording = false;
-
-      const start_stop_stt = document.querySelector('.start-stop-stt');
-      const search_input = document.querySelector('.search-input');
-
-      start_stop_stt.addEventListener('click', async () => {
-        if (!isRecording) {
-          // Start recording
-          try {
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            mediaRecorder = new MediaRecorder(stream);
-            audioChunks = [];
-
-            mediaRecorder.ondataavailable = (event) => {
-              audioChunks.push(event.data);
-            };
-
-            mediaRecorder.onstop = async () => {
-              const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-              const formData = new FormData();
-              formData.append('audio', audioBlob, 'recording.wav');
-
-              search_input.value = "Processing...";
-
-              try {
-                const response = await fetch('/transcribe/', {
-                  method: 'POST',
-                  body: formData,
-                  headers: {
-                    'X-CSRFToken': getCookie('csrftoken')
-                  }
-                });
-
-                const data = await response.json();
-                search_input.value = data.transcript || '';
-
-              } catch (error) {
-                console.error('Transcription error:', error);
-                search_input.value = '';
-              }
-
-              // Stop all mic tracks
-              stream.getTracks().forEach(track => track.stop());
-            };
-
-            mediaRecorder.start();
-            search_input.value = "Listening...";
-            isRecording = true;
-            console.log('Recording started.');
-
-          } catch (error) {
-            console.error('Mic error:', error);
-            search_input.value = 'Microphone access denied.';
-          }
-
-        } else {
-          // Stop recording
-          mediaRecorder.stop();
-          isRecording = false;
-          console.log('Recording stopped.');
-        }
-      });
-
-
-      const search_form = document.querySelector('.search-form');
-      search_form.addEventListener('submit', async (event) => {
-        event.preventDefault();
-        const query = document.querySelector('.search-input').value;
-        if (!query.trim()) return;
-        document.querySelector('.search-input').value = '';
-        await get_response(query);
-      });
-
-      const networkingCommands = document.querySelector('.networking-commands-card');
-      networkingCommands.addEventListener('click', async (event) => {
-        event.preventDefault();
-        await get_response("Networking Commands.");
-      });
-
-      const volumeManagementCard = document.querySelector('.volume-management-card');
-      volumeManagementCard.addEventListener('click', async (event) => {
-        event.preventDefault();
-        await get_response("Volume Management.");
-      });
-    });
-  </script>
 </head>
 
 <body>
@@ -820,9 +513,22 @@
       <form class="search-form" method="get">
         <input class="search-input" type="text" name="q" placeholder="Search the knowledge base…" autocomplete="off" />
 
-        <div class="start-stop-stt">l|l|l
-        </div>
+        <!-- Hidden file input -->
+        <input type="file" id="doc-upload-input" accept=".pdf,.txt,.docx,.md,.csv" style="display:none;" />
 
+        <!-- Upload button -->
+        <button type="button" class="upload-btn" id="upload-btn" title="Upload document to knowledge base">
+          <svg viewBox="0 0 24 24">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+        </button>
+
+        <!-- STT button -->
+        <div class="start-stop-stt">l|l|l</div>
+
+        <!-- Search button -->
         <button class="search-btn" type="submit" aria-label="Search">
           <svg viewBox="0 0 24 24">
             <circle cx="11" cy="11" r="7" />
@@ -833,6 +539,9 @@
     </div>
   </div>
 
+  <!-- UPLOAD TOAST -->
+  <div class="upload-toast" id="upload-toast"></div>
+
   <!-- CARDS -->
   <section class="cards-section">
 
@@ -842,7 +551,6 @@
         <span class="section-dot dot-discover"></span>
         Discover
       </div>
-      <!-- Placeholder cards for development -->
       <div class="cards-grid">
         <div class="card orange networking-commands-card">
           <div class="card-title">Networking Commands</div>
@@ -867,27 +575,255 @@
         <span class="section-dot dot-more"></span>
         More
       </div>
-
       <div class="cards-grid">
         <a href="/about" class="card purple">
           <div class="card-title">About</div>
           <div class="card-excerpt">Learn what this project is, how it was built, and what technologies ...</div>
-          <div class="card-meta">
-            <span>204 words</span><span class="sep">·</span><span></span>
-          </div>
+          <div class="card-meta"><span>204 words</span></div>
         </a>
         <a href="/tech_stack" class="card bluish">
           <div class="card-title">Tech Stack</div>
           <div class="card-excerpt">The tools powering this app are Django, Ollama, AWS Bedrock ...</div>
-          <div class="card-meta">
-            <span>310 words</span><span class="sep">·</span><span></span>
-          </div>
+          <div class="card-meta"><span>310 words</span></div>
         </a>
       </div>
     </div>
 
   </section>
 
-</body>
+  <script>
+    // ── TOAST HELPER ──
+    function showToast(message, type = '') {
+      const toast = document.getElementById('upload-toast');
+      toast.textContent = message;
+      toast.className = `upload-toast show ${type}`;
+      setTimeout(() => {
+        toast.className = 'upload-toast';
+      }, 3500);
+    }
 
+    // ── UPLOAD LOGIC ──
+    const uploadBtn = document.getElementById('upload-btn');
+    const uploadInput = document.getElementById('doc-upload-input');
+
+    uploadBtn.addEventListener('click', () => {
+      uploadInput.click();   // open file picker
+    });
+
+    uploadInput.addEventListener('change', async () => {
+      const file = uploadInput.files[0];
+      if (!file) return;
+
+      showToast(`Uploading ${file.name}...`);
+
+      const formData = new FormData();
+      formData.append('document', file);
+
+      try {
+        const response = await fetch('/upload/', {
+          method: 'POST',
+          body: formData,
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          showToast(`✓ ${data.filename} — ${data.chunks} chunks ingested`, 'success');
+        } else {
+          showToast(`✗ ${data.error}`, 'error');
+        }
+
+      } catch (error) {
+        showToast('✗ Upload failed. Please try again.', 'error');
+        console.error('Upload error:', error);
+      }
+
+      // Reset input so same file can be re-uploaded if needed
+      uploadInput.value = '';
+    });
+
+    // ── CONVERSATION ──
+    async function get_response(query) {
+      const conversation = document.querySelector('.conversation');
+
+      const user_msg = document.createElement('div');
+      user_msg.classList.add('msg', 'msg-user');
+      user_msg.innerHTML = `
+        <span class="msg-text">${query}</span>
+        <div class="msg-icon msg-icon-user">You</div>
+      `;
+      conversation.appendChild(user_msg);
+
+      const llm_msg = document.createElement('div');
+      llm_msg.classList.add('msg', 'msg-llm');
+      llm_msg.innerHTML = `
+        <div class="msg-icon msg-icon-llm">AI</div>
+        <div class="msg-body">
+          <div class="msg-text msg-text-llm"></div>
+          <div class="msg-meta"></div>
+        </div>
+      `;
+      conversation.appendChild(llm_msg);
+
+      const msg_text = llm_msg.querySelector('.msg-text');
+      const msg_meta = llm_msg.querySelector('.msg-meta');
+
+      const response = await fetch('/stream/?q=' + encodeURIComponent(query));
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+
+      let speechBuffer = '';
+
+      function speakBuffered(token) {
+        speechBuffer += token;
+        const hasPunctuation = /[.!?,;]\s*$/.test(speechBuffer);
+        if (hasPunctuation) {
+          speakPolly(speechBuffer.trim());
+          speechBuffer = '';
+        }
+      }
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) {
+          if (speechBuffer.trim()) {
+            speechBuffer = '';
+          }
+          break;
+        }
+
+        const chunk = decoder.decode(value);
+        chunk.split("\n")
+          .filter(line => line.startsWith("data: "))
+          .forEach(line => {
+            try {
+              const data = JSON.parse(line.slice(6));
+              if (data.type === "token") {
+                llm_msg.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                msg_text.textContent += data.value;
+                // speakBuffered(data.value);
+              }
+              if (data.type === "meta") {
+                msg_meta.textContent = data.accuracy + "% Accuracy \xa0\xa0\xa0\xa0\xa0" + data.chunks + " Chunks";
+              }
+            } catch (e) { }
+          });
+      }
+    }
+
+    // ── POLLY TTS ──
+    const audioQueue = [];
+    let isPlaying = false;
+
+    async function speakPolly(text) {
+      const response = await fetch('/polly/?text=' + encodeURIComponent(text));
+      const audioBlob = await response.blob();
+      const audioUrl = URL.createObjectURL(audioBlob);
+      audioQueue.push(audioUrl);
+      if (!isPlaying) playNext();
+    }
+
+    function playNext() {
+      if (audioQueue.length === 0) { isPlaying = false; return; }
+      isPlaying = true;
+      const audioUrl = audioQueue.shift();
+      const audio = new Audio(audioUrl);
+      audio.play();
+      audio.onended = () => { URL.revokeObjectURL(audioUrl); playNext(); };
+    }
+
+    function speak(text) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 1;
+      utterance.pitch = 1.1;
+      const voices = speechSynthesis.getVoices();
+      utterance.voice = voices[3];
+      speechSynthesis.speak(utterance);
+    }
+
+    // ── DOM READY ──
+    document.addEventListener('DOMContentLoaded', () => {
+
+      function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+      }
+
+      // ── STT ──
+      let mediaRecorder;
+      let audioChunks = [];
+      let isRecording = false;
+
+      const start_stop_stt = document.querySelector('.start-stop-stt');
+      const search_input = document.querySelector('.search-input');
+
+      start_stop_stt.addEventListener('click', async () => {
+        if (!isRecording) {
+          try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaRecorder = new MediaRecorder(stream);
+            audioChunks = [];
+
+            mediaRecorder.ondataavailable = (event) => { audioChunks.push(event.data); };
+
+            mediaRecorder.onstop = async () => {
+              const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+              const formData = new FormData();
+              formData.append('audio', audioBlob, 'recording.wav');
+              search_input.value = "Processing...";
+              try {
+                const response = await fetch('/transcribe/', {
+                  method: 'POST',
+                  body: formData,
+                  headers: { 'X-CSRFToken': getCookie('csrftoken') }
+                });
+                const data = await response.json();
+                search_input.value = data.transcript || '';
+              } catch (error) {
+                console.error('Transcription error:', error);
+                search_input.value = '';
+              }
+              stream.getTracks().forEach(track => track.stop());
+            };
+
+            mediaRecorder.start();
+            search_input.value = "Listening...";
+            isRecording = true;
+
+          } catch (error) {
+            console.error('Mic error:', error);
+            search_input.value = 'Microphone access denied.';
+          }
+        } else {
+          mediaRecorder.stop();
+          isRecording = false;
+        }
+      });
+
+      // ── SEARCH SUBMIT ──
+      const search_form = document.querySelector('.search-form');
+      search_form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const query = document.querySelector('.search-input').value;
+        if (!query.trim()) return;
+        document.querySelector('.search-input').value = '';
+        await get_response(query);
+      });
+
+      // ── DISCOVER CARDS ──
+      document.querySelector('.networking-commands-card').addEventListener('click', async (e) => {
+        e.preventDefault();
+        await get_response("Networking Commands.");
+      });
+
+      document.querySelector('.volume-management-card').addEventListener('click', async (e) => {
+        e.preventDefault();
+        await get_response("Volume Management.");
+      });
+
+    });
+  </script>
+
+</body>
 </html>
